@@ -48,7 +48,33 @@ public class ProdutosDAO {
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
-        
+        try {
+            conn = new conectaDAO().connectDB();
+            
+            String sql = "select * from produtos;";
+            
+            prep = conn.prepareStatement(sql);
+            ResultSet result = prep.executeQuery();
+            
+            while (result.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                
+                produto.setId(result.getInt("id"));
+                produto.setNome(result.getString("nome"));
+                produto.setValor(result.getInt("valor"));
+                produto.setStatus(result.getString("status"));
+                
+                listagem.add(produto);
+            }
+            
+            if(conn != null && !conn.isClosed()) {
+            conn.close();
+            System.out.println("DESCONECTADO DA DB!");
+            }
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao tentar listar produtos!");
+        }
         return listagem;
     }
     
